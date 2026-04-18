@@ -24,8 +24,8 @@ COPY data/daylily.db ./data/daylily.db
 ENV MCP_TRANSPORT=http
 ENV DB_PATH=/app/data/daylily.db
 ENV SQLITE3_BIN=/usr/bin/sqlite3
-ENV PORT=3000
+ENV PORT=8080
 
-EXPOSE 3000
+EXPOSE 8080
 
 CMD ["node", "build/index.js"]

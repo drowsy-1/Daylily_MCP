@@ -11,7 +11,7 @@ import { registerTools } from "./tools.js";
 import { oauthProvider } from "./auth.js";
 
 const TRANSPORT = process.env.MCP_TRANSPORT ?? "stdio";
-const PORT = parseInt(process.env.PORT ?? "3000", 10);
+const PORT = parseInt(process.env.PORT ?? "8080", 10);
 const BASE_URL = process.env.BASE_URL ?? `http://localhost:${PORT}`;
 
 function createMcpServer(): McpServer {
