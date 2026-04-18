@@ -1,0 +1,27 @@
+# Source PDFs (53 GB)
+journals/
+newsletters/
+
+# Extracted data
+data/markdown/
+data/daylily.db-shm
+data/daylily.db-wal
+
+# Database tracked via Git LFS (360 MB)
+# data/daylily.db
+
+# Python extraction pipeline venv
+extraction/venv/
+extraction/__pycache__/
+*.pyc
+
+# Legacy/scratch
+text_extraction/
+
+# Node
+node_modules/
+mcp-server/node_modules/
+mcp-server/build/
+
+# OS
+.DS_Store

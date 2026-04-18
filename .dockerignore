@@ -1,0 +1,9 @@
+extraction/
+data/markdown/
+data/pdfs/
+mcp-server/node_modules/
+mcp-server/src/
+*.pdf
+.git
+.gitignore
+*.md
