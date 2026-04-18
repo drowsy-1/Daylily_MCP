@@ -5,12 +5,17 @@ RUN apt-get update && apt-get install -y sqlite3 && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Copy and install MCP server dependencies
+# Copy and install all dependencies (including dev for build)
 COPY mcp-server/package.json mcp-server/package-lock.json ./
-RUN npm ci --omit=dev
+RUN npm ci
 
-# Copy compiled server
-COPY mcp-server/build ./build
+# Copy source and build
+COPY mcp-server/src ./src
+COPY mcp-server/tsconfig.json ./
+RUN npx tsc
+
+# Remove dev dependencies after build
+RUN npm prune --omit=dev
 
 # Copy the database
 COPY data/daylily.db ./data/daylily.db

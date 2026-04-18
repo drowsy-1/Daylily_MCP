@@ -2,8 +2,10 @@ extraction/
 data/markdown/
 data/pdfs/
 mcp-server/node_modules/
-mcp-server/src/
+mcp-server/build/
+journals/
+newsletters/
+text_extraction/
 *.pdf
 .git
 .gitignore
-*.md
