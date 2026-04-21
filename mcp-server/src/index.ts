@@ -25,6 +25,13 @@ function createMcpServer(): McpServer {
 
 async function startHttp() {
   const app = express();
+  app.set("trust proxy", 1);
+
+  // Log all incoming requests for debugging OAuth flow
+  app.use((req, _res, next) => {
+    console.error(`[HTTP] ${req.method} ${req.path}`);
+    next();
+  });
 
   const issuerUrl = new URL(BASE_URL);
   const mcpEndpointUrl = new URL("/mcp", BASE_URL);

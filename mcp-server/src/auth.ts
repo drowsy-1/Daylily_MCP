@@ -33,10 +33,26 @@ const refreshTokens = new Map<string, { clientId: string }>();
 
 const clientsStore: OAuthRegisteredClientsStore = {
   async getClient(clientId: string) {
-    return clients.get(clientId);
+    let client = clients.get(clientId);
+    if (!client) {
+      // Auto-accept unknown client_ids — handles stale cached clients after
+      // server restart. Safe for a single-user, password-protected server.
+      console.error(`[OAuth] getClient(${clientId}) → auto-registering unknown client`);
+      client = {
+        client_id: clientId,
+        client_name: "auto-registered",
+        redirect_uris: [],
+        grant_types: ["authorization_code", "refresh_token"],
+        response_types: ["code"],
+        token_endpoint_auth_method: "none",
+      } as OAuthClientInformationFull;
+      clients.set(clientId, client);
+    }
+    return client;
   },
   async registerClient(client: OAuthClientInformationFull) {
     clients.set(client.client_id, client);
+    console.error(`[OAuth] registerClient(${client.client_id})`);
     return client;
   },
 };
