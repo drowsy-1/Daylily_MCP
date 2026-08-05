@@ -30,6 +30,9 @@ async function startHttp() {
   // Log all incoming requests for debugging OAuth flow
   app.use((req, _res, next) => {
     console.error(`[HTTP] ${req.method} ${req.path}`);
+    if (req.path === "/authorize") {
+      console.error(`[OAuth] authorize params:`, JSON.stringify(req.query));
+    }
     next();
   });
 

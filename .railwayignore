@@ -1,0 +1,13 @@
+# Keep the `railway up` upload small — the database is downloaded from
+# GitHub LFS during the Docker build (see Dockerfile), and the Dockerfile
+# only needs mcp-server/ sources.
+data/
+journals/
+newsletters/
+extraction/
+text_extraction/
+node_modules/
+mcp-server/node_modules/
+mcp-server/build/
+*.pdf
+.git/

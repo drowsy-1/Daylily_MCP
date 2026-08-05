@@ -11,6 +11,10 @@ import type {
   OAuthTokenRevocationRequest,
 } from "@modelcontextprotocol/sdk/shared/auth.js";
 import type { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
+import {
+  InvalidGrantError,
+  InvalidTokenError,
+} from "@modelcontextprotocol/sdk/server/auth/errors.js";
 
 const SERVER_PASSWORD = process.env.BEARER_TOKEN ?? "daylily";
 
@@ -41,7 +45,9 @@ const clientsStore: OAuthRegisteredClientsStore = {
       client = {
         client_id: clientId,
         client_name: "auto-registered",
-        redirect_uris: [],
+        redirect_uris: [
+          "https://claude.ai/api/mcp/auth_callback",
+        ],
         grant_types: ["authorization_code", "refresh_token"],
         response_types: ["code"],
         token_endpoint_auth_method: "none",
@@ -91,7 +97,7 @@ export const oauthProvider: OAuthServerProvider = {
   ) {
     const entry = authCodes.get(authorizationCode);
     if (!entry || entry.expiresAt < Date.now()) {
-      throw new Error("Invalid or expired authorization code");
+      throw new InvalidGrantError("Invalid or expired authorization code");
     }
     return entry.codeChallenge;
   },
@@ -102,10 +108,10 @@ export const oauthProvider: OAuthServerProvider = {
   ) {
     const entry = authCodes.get(authorizationCode);
     if (!entry || entry.expiresAt < Date.now()) {
-      throw new Error("Invalid or expired authorization code");
+      throw new InvalidGrantError("Invalid or expired authorization code");
     }
     if (entry.clientId !== client.client_id) {
-      throw new Error("Client mismatch");
+      throw new InvalidGrantError("Authorization code was issued to a different client");
     }
 
     authCodes.delete(authorizationCode);
@@ -133,7 +139,7 @@ export const oauthProvider: OAuthServerProvider = {
   ) {
     const entry = refreshTokens.get(refreshToken);
     if (!entry || entry.clientId !== client.client_id) {
-      throw new Error("Invalid refresh token");
+      throw new InvalidGrantError("Invalid refresh token");
     }
 
     // Rotate tokens
@@ -158,7 +164,7 @@ export const oauthProvider: OAuthServerProvider = {
   async verifyAccessToken(token: string): Promise<AuthInfo> {
     const entry = accessTokens.get(token);
     if (!entry || entry.expiresAt < Date.now()) {
-      throw new Error("Invalid or expired access token");
+      throw new InvalidTokenError("Invalid or expired access token");
     }
     return {
       token,
